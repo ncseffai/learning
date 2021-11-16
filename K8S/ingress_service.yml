@@ -6,11 +6,13 @@ metadata:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - http:
+  - host: kutya.ec7114563f3f422c8149.westeurope.aksapp.io
+    http:
       paths:
-      - path: /kutya
+      - path: /
         pathType: Prefix
         backend:
           service: 
             name: hello-pod-internal
-            port: 80
+            port:
+              number: 80
