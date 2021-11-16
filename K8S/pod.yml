@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-pod
+  labels:
+    name: web
+spec:
+  containers:
+    - name: web-ctr
+      image: learning
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
