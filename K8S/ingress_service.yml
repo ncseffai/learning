@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aks-hello-pod-ingress
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /kutya
+        pathType: Prefix
+        backend:
+          service: 
+            name: hello-pod-internal
+            port: 80
