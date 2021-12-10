@@ -1,0 +1,14 @@
+kind: Service #A service is a k8s object and basically a firewall rule
+apiVersion: v1
+metadata:
+  namespace: default #a namespace is a DNS compatible label that objects are subdivided into. The default namespace is 'default'.
+  name: nodeport-service # a string that uniquely identifies this object within the current namespace. 
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80 #Is it always the same like the containerPort to which we want to route the traffic
+      protocol: TCP
+      nodePort: 30000
+  selector:
+    podname: react-js-sample-app

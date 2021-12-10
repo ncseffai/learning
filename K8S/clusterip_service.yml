@@ -1,12 +1,13 @@
-kind: Service
+kind: Service #A service is a k8s object and basically a firewall rule
 apiVersion: v1
 metadata:
-  name: hello-pod-internal
+  namespace: default #a namespace is a DNS compatible label that objects are subdivided into. The default namespace is 'default'.
+  name: ipcluster-service # a string that uniquely identifies this object within the current namespace. 
 spec:
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
   selector:
-    name: hello-pod
-  type: ClusterIP
+    podname: react-js-sample-app
