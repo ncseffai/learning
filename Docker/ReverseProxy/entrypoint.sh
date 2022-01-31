@@ -17,8 +17,10 @@ ENDOFFILE
 
 echo 'creating proxy file for NGINX'
 cat > /etc/nginx/conf.d/default.conf << ENDOFFILE
-location /kutya {
+server{
+  location / {
     proxy_pass http://telex.hu;
+  }
 }
 ENDOFFILE
 
