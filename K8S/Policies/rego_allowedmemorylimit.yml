@@ -1,0 +1,40 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8smemorylimit
+spec:
+  crd:
+    spec:
+      names:
+        kind: k8smemorylimit
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          properties:
+            memoryLimit:
+              type: integer
+            excludedContainers:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8smemorylimit
+        violation[{"msg": msg}] {
+          container := input_containers[_]
+          not input_container_excluded(container.name)
+          memoryLimit := to_number(input.parameters.memoryLimit)
+          requestedMemoryLimit := to_number(trim_suffix(container.resources.requests.memory, "Mi"))
+          not memoryLimit > requestedMemoryLimit
+          msg := sprintf("Pod requests more memory than it is allowed. Requested: %v => Allowed: %v", [requestedMemoryLimit, memoryLimit])
+        }
+        input_containers[c] {
+            c := input.review.object.spec.containers[_]
+        }
+        input_containers[c] {
+            c := input.review.object.spec.initContainers[_]
+        }
+        input_container_excluded(field) {
+            field == input.parameters.excludedContainers[_]
+        }

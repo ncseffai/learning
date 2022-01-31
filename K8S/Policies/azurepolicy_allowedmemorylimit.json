@@ -1,0 +1,97 @@
+{
+  "mode": "Microsoft.Kubernetes.Data",
+  "policyRule": {
+    "if": {
+      "field": "type",
+      "in": [
+        "AKS Engine",
+        "Microsoft.Kubernetes/connectedClusters",
+        "Microsoft.ContainerService/managedClusters"
+      ]
+    },
+    "then": {
+      "effect": "[parameters('effect')]",
+      "details": {
+        "templateInfo": {
+          "sourceType": "Base64Encoded",
+          "content": "YXBpVmVyc2lvbjogdGVtcGxhdGVzLmdhdGVrZWVwZXIuc2gvdjFiZXRhMQpraW5kOiBDb25zdHJhaW50VGVtcGxhdGUKbWV0YWRhdGE6CiAgbmFtZTogazhzbWVtb3J5bGltaXQKc3BlYzoKICBjcmQ6CiAgICBzcGVjOgogICAgICBuYW1lczoKICAgICAgICBraW5kOiBrOHNtZW1vcnlsaW1pdAogICAgICB2YWxpZGF0aW9uOgogICAgICAgICMgU2NoZW1hIGZvciB0aGUgYHBhcmFtZXRlcnNgIGZpZWxkCiAgICAgICAgb3BlbkFQSVYzU2NoZW1hOgogICAgICAgICAgcHJvcGVydGllczoKICAgICAgICAgICAgbWVtb3J5TGltaXQ6CiAgICAgICAgICAgICAgdHlwZTogaW50ZWdlcgogICAgICAgICAgICBleGNsdWRlZENvbnRhaW5lcnM6CiAgICAgICAgICAgICAgdHlwZTogYXJyYXkKICAgICAgICAgICAgICBpdGVtczoKICAgICAgICAgICAgICAgIHR5cGU6IHN0cmluZwogIHRhcmdldHM6CiAgICAtIHRhcmdldDogYWRtaXNzaW9uLms4cy5nYXRla2VlcGVyLnNoCiAgICAgIHJlZ286IHwKICAgICAgICBwYWNrYWdlIGs4c21lbW9yeWxpbWl0CiAgICAgICAgdmlvbGF0aW9uW3sibXNnIjogbXNnfV0gewogICAgICAgICAgY29udGFpbmVyIDo9IGlucHV0X2NvbnRhaW5lcnNbX10KICAgICAgICAgIG5vdCBpbnB1dF9jb250YWluZXJfZXhjbHVkZWQoY29udGFpbmVyLm5hbWUpCiAgICAgICAgICBtZW1vcnlMaW1pdCA6PSB0b19udW1iZXIoaW5wdXQucGFyYW1ldGVycy5tZW1vcnlMaW1pdCkKICAgICAgICAgIHJlcXVlc3RlZE1lbW9yeUxpbWl0IDo9IHRvX251bWJlcih0cmltX3N1ZmZpeChjb250YWluZXIucmVzb3VyY2VzLnJlcXVlc3RzLm1lbW9yeSwgIk1pIikpCiAgICAgICAgICBub3QgbWVtb3J5TGltaXQgPiByZXF1ZXN0ZWRNZW1vcnlMaW1pdAogICAgICAgICAgbXNnIDo9IHNwcmludGYoIlBvZCByZXF1ZXN0cyBtb3JlIG1lbW9yeSB0aGFuIGl0IGlzIGFsbG93ZWQuIFJlcXVlc3RlZDogJXYgPT4gQWxsb3dlZDogJXYiLCBbcmVxdWVzdGVkTWVtb3J5TGltaXQsIG1lbW9yeUxpbWl0XSkKICAgICAgICB9CiAgICAgICAgaW5wdXRfY29udGFpbmVyc1tjXSB7CiAgICAgICAgICAgIGMgOj0gaW5wdXQucmV2aWV3Lm9iamVjdC5zcGVjLmNvbnRhaW5lcnNbX10KICAgICAgICB9CiAgICAgICAgaW5wdXRfY29udGFpbmVyc1tjXSB7CiAgICAgICAgICAgIGMgOj0gaW5wdXQucmV2aWV3Lm9iamVjdC5zcGVjLmluaXRDb250YWluZXJzW19dCiAgICAgICAgfQogICAgICAgIGlucHV0X2NvbnRhaW5lcl9leGNsdWRlZChmaWVsZCkgewogICAgICAgICAgICBmaWVsZCA9PSBpbnB1dC5wYXJhbWV0ZXJzLmV4Y2x1ZGVkQ29udGFpbmVyc1tfXQogICAgICAgIH0="
+        },
+        "apiGroups": [
+          ""
+        ],
+        "kinds": [
+          "Pod"
+        ],
+        "excludedNamespaces": "[parameters('excludedNamespaces')]",
+        "namespaces": "[parameters('namespaces')]",
+        "labelSelector": "[parameters('labelSelector')]",
+        "values": {
+          "memoryLimit": "[parameters('memoryLimit')]",
+          "excludedContainers": "[parameters('excludedContainers')]"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "effect": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Effect",
+        "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+      },
+      "allowedValues": [
+        "audit",
+        "deny",
+        "disabled"
+      ],
+      "defaultValue": "deny"
+    },
+    "excludedNamespaces": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Namespace exclusions",
+        "description": "List of Kubernetes namespaces to exclude from policy evaluation."
+      },
+      "defaultValue": [
+        "kube-system",
+        "kube-public",
+        "kube-node-lease",
+        "gatekeeper-system"
+      ]
+    },
+    "namespaces": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Namespace inclusions",
+        "description": "List of Kubernetes namespaces to only include in policy evaluation. An empty list means the policy is applied to all resources in all namespaces."
+      },
+      "defaultValue": [
+        "default"
+      ]
+    },
+    "labelSelector": {
+      "type": "Object",
+      "metadata": {
+        "displayName": "Kubernetes label selector",
+        "description": "Label query to select Kubernetes resources for policy evaluation. An empty label selector matches all Kubernetes resources."
+      },
+      "defaultValue": {}
+    },
+    "memoryLimit": {
+      "type": "Integer",
+      "metadata": {
+        "displayName": "Allowed memory limit in Megabytes",
+        "description": "If any pods request for memory is more than the given value, it will deny the deployment."
+      },
+      "defaultValue": 64
+    },
+    "excludedContainers": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Containers exclusions",
+        "description": "The list of InitContainers and Containers to exclude from policy evaluation. The identify is the name of container. Use an empty list to apply this policy to all containers in all namespaces."
+      },
+      "defaultValue": []
+    }
+  }
+}

@@ -1,0 +1,41 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedregistries
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedRegistries
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          properties:
+            imageRegex:
+              type: array
+              items:
+                type: string
+            excludedContainers:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sallowedregistries
+        violation[{"msg": msg}] {
+          container := input_containers[_]
+          not input_container_excluded(container.name)
+          satisfied := [good | repo = input.parameters.imageRegex[_] ; good = re_match(repo, container.image)]
+          not any(satisfied)
+          msg := sprintf("Container image %v for container %v has not been allowed.", [container.image, container.name])
+        }
+        input_containers[c] {
+            c := input.review.object.spec.containers[_]
+        }
+        input_containers[c] {
+            c := input.review.object.spec.initContainers[_]
+        }
+        input_container_excluded(field) {
+            field == input.parameters.excludedContainers[_]
+        }

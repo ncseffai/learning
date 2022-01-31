@@ -1,0 +1,27 @@
+{
+    "parameters": {
+        "memoryLimit": 564
+    },
+    "review": {
+        "object": {
+            "spec": {
+                "containers": [
+                    {
+                        "name": "something",
+                        "image": "mcr.microsoft.com/dotnet/core/samples:aspnetapp",
+                        "resources": {
+                            "requests": {
+                                "memory": "432Mi",
+                                "cpu": "250m"
+                            },
+                            "limits": {
+                                "memory": "64Mi",
+                                "cpu": "250m"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

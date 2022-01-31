@@ -1,0 +1,93 @@
+{
+    "mode": "Microsoft.Kubernetes.Data",
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "in": [
+          "AKS Engine",
+          "Microsoft.Kubernetes/connectedClusters",
+          "Microsoft.ContainerService/managedClusters"
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "templateInfo": {
+            "sourceType": "Base64Encoded",
+            "content": "YXBpVmVyc2lvbjogdGVtcGxhdGVzLmdhdGVrZWVwZXIuc2gvdjFiZXRhMQpraW5kOiBDb25zdHJhaW50VGVtcGxhdGUKbWV0YWRhdGE6CiAgbmFtZTogazhzYWxsb3dlZHJlZ2lzdHJpZXMKc3BlYzoKICBjcmQ6CiAgICBzcGVjOgogICAgICBuYW1lczoKICAgICAgICBraW5kOiBLOHNBbGxvd2VkUmVnaXN0cmllcwogICAgICB2YWxpZGF0aW9uOgogICAgICAgICMgU2NoZW1hIGZvciB0aGUgYHBhcmFtZXRlcnNgIGZpZWxkCiAgICAgICAgb3BlbkFQSVYzU2NoZW1hOgogICAgICAgICAgcHJvcGVydGllczoKICAgICAgICAgICAgaW1hZ2VSZWdleDoKICAgICAgICAgICAgICB0eXBlOiBhcnJheQogICAgICAgICAgICAgIGl0ZW1zOgogICAgICAgICAgICAgICAgdHlwZTogc3RyaW5nCiAgICAgICAgICAgIGV4Y2x1ZGVkQ29udGFpbmVyczoKICAgICAgICAgICAgICB0eXBlOiBhcnJheQogICAgICAgICAgICAgIGl0ZW1zOgogICAgICAgICAgICAgICAgdHlwZTogc3RyaW5nCiAgdGFyZ2V0czoKICAgIC0gdGFyZ2V0OiBhZG1pc3Npb24uazhzLmdhdGVrZWVwZXIuc2gKICAgICAgcmVnbzogfAogICAgICAgIHBhY2thZ2UgazhzYWxsb3dlZHJlZ2lzdHJpZXMKCiAgICAgICAgdmlvbGF0aW9uW3sibXNnIjogbXNnfV0gewogICAgICAgICAgY29udGFpbmVyIDo9IGlucHV0X2NvbnRhaW5lcnNbX10KICAgICAgICAgIG5vdCBpbnB1dF9jb250YWluZXJfZXhjbHVkZWQoY29udGFpbmVyLm5hbWUpCiAgICAgICAgICBzYXRpc2ZpZWQgOj0gW2dvb2QgfCByZXBvID0gaW5wdXQucGFyYW1ldGVycy5pbWFnZVJlZ2V4W19dIDsgZ29vZCA9IHJlX21hdGNoKHJlcG8sIGNvbnRhaW5lci5pbWFnZSldCiAgICAgICAgICBub3QgYW55KHNhdGlzZmllZCkKICAgICAgICAgIG1zZyA6PSBzcHJpbnRmKCJDb250YWluZXIgaW1hZ2UgJXYgZm9yIGNvbnRhaW5lciAldiBoYXMgbm90IGJlZW4gYWxsb3dlZC4iLCBbY29udGFpbmVyLmltYWdlLCBjb250YWluZXIubmFtZV0pCiAgICAgICAgfQoKICAgICAgICBpbnB1dF9jb250YWluZXJzW2NdIHsKICAgICAgICAgICAgYyA6PSBpbnB1dC5yZXZpZXcub2JqZWN0LnNwZWMuY29udGFpbmVyc1tfXQogICAgICAgIH0KICAgICAgICBpbnB1dF9jb250YWluZXJzW2NdIHsKICAgICAgICAgICAgYyA6PSBpbnB1dC5yZXZpZXcub2JqZWN0LnNwZWMuaW5pdENvbnRhaW5lcnNbX10KICAgICAgICB9CiAgICAgICAgaW5wdXRfY29udGFpbmVyX2V4Y2x1ZGVkKGZpZWxkKSB7CiAgICAgICAgICAgIGZpZWxkID09IGlucHV0LnBhcmFtZXRlcnMuZXhjbHVkZWRDb250YWluZXJzW19dCiAgICAgICAgfQo="
+          },
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ],
+          "excludedNamespaces": "[parameters('excludedNamespaces')]",
+          "namespaces": "[parameters('namespaces')]",
+          "labelSelector": "[parameters('labelSelector')]",
+          "values": {
+            "imageRegex": "[parameters('allowedContainerImagesRegex')]",
+            "excludedContainers": "[parameters('excludedContainers')]"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "audit",
+          "deny",
+          "disabled"
+        ],
+        "defaultValue": "deny"
+      },
+      "excludedNamespaces": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Namespace exclusions",
+          "description": "List of Kubernetes namespaces to exclude from policy evaluation."
+        },
+        "defaultValue": [
+          "kube-system",
+          "gatekeeper-system",
+          "azure-arc"
+        ]
+      },
+      "namespaces": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Namespace inclusions",
+          "description": "List of Kubernetes namespaces to only include in policy evaluation. An empty list means the policy is applied to all resources in all namespaces."
+        },
+        "defaultValue": []
+      },
+      "labelSelector": {
+        "type": "Object",
+        "metadata": {
+          "displayName": "Kubernetes label selector",
+          "description": "Label query to select Kubernetes resources for policy evaluation. An empty label selector matches all Kubernetes resources."
+        },
+        "defaultValue": {}
+      },
+      "allowedContainerImagesRegex": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed registry or registries regex",
+          "description": "The RegEx rule used to match allowed container image field in a Kubernetes cluster. For example, to allow any Azure Container Registry image by matching partial path: (^.+)(azurecr.io)(.+$)."
+        }
+      },
+      "excludedContainers": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Containers exclusions",
+          "description": "The list of InitContainers and Containers to exclude from policy evaluation. The identify is the name of container. Use an empty list to apply this policy to all containers in all namespaces."
+        },
+        "defaultValue": []
+      }
+    }
+}
